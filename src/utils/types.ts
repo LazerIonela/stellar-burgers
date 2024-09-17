@@ -38,3 +38,4 @@ export type TUser = {
 };
 
 export type TTabMode = 'bun' | 'sauce' | 'main';
+export type TOrderStatus = 'done' | 'pending' | 'failed';

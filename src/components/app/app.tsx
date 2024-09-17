@@ -14,9 +14,11 @@ import styles from './app.module.css';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import ProtectedRoute from '../protected-route/ProtectedRoute';
-import { useDispatch } from 'react-redux';
+import { ProtectedRoute } from '../protected-route/ProtectedRoute';
+import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
+import { getIngredients } from '../../services/ingredientsSlice';
+import { getUser } from '../../services/userSlice';
 
 const App = () => {
   const navigate = useNavigate();
@@ -24,10 +26,10 @@ const App = () => {
   const backgroundLocation = location.state?.background;
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(getIngredients());
-  //   dispatch(getUser());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(getUser());
+    dispatch(getIngredients());
+  }, [dispatch]);
 
   return (
     <div className={styles.app}>
@@ -38,7 +40,7 @@ const App = () => {
         <Route
           path='/login'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <Login />
             </ProtectedRoute>
           }
@@ -46,7 +48,7 @@ const App = () => {
         <Route
           path='/register'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <Register />
             </ProtectedRoute>
           }
@@ -54,7 +56,7 @@ const App = () => {
         <Route
           path='/forgot-password'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <ForgotPassword />
             </ProtectedRoute>
           }
@@ -62,7 +64,7 @@ const App = () => {
         <Route
           path='/reset-password'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <ResetPassword />
             </ProtectedRoute>
           }
@@ -113,7 +115,7 @@ const App = () => {
               <Modal
                 title='IngredientDetails'
                 children={<IngredientDetails />}
-                onClose={() => navigate('/ingredients')}
+                onClose={() => navigate('/')}
               />
             }
           />
