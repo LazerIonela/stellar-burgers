@@ -9,7 +9,8 @@ import {
   forgotPasswordApi,
   resetPasswordApi,
   TRegisterData,
-  TLoginData
+  TLoginData,
+  TUserResponse
 } from '../utils/burger-api';
 import { RootState } from './store';
 
@@ -20,7 +21,10 @@ export const getUser = createAsyncThunk('user/getUser', async () => {
 
 export const updateUser = createAsyncThunk(
   'user/update',
-  async (user: TRegisterData, p0) => await updateUserApi(user, p0)
+  async (user: TUser) => {
+    const response = await updateUserApi(user);
+    return response;
+  }
 );
 
 export const registerUser = createAsyncThunk(
@@ -33,10 +37,10 @@ export const loginUser = createAsyncThunk(
   async (data: TLoginData) => await loginUserApi(data)
 );
 
-export const logout = createAsyncThunk(
-  'user/logout',
-  async () => await logoutApi()
-);
+export const logout = createAsyncThunk('user/logout', async () => {
+  const response = await logoutApi();
+  return response;
+});
 
 export const forgotPassword = createAsyncThunk(
   'user/forgotPassword',
@@ -82,11 +86,12 @@ const userSlice = createSlice({
         state.isAuthChecked = true;
       })
       .addCase(getUser.rejected, (state, action) => {
-        state.isAuthChecked = false;
-        state.error = action.error.message;
+        state.isAuthChecked = true;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        if (action.payload.user?.email && action.payload.user?.name) {
+          state.user = action.payload.user;
+        }
       })
 
       .addCase(registerUser.fulfilled, (state, action) => {

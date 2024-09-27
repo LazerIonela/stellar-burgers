@@ -5,6 +5,7 @@ import { FeedInfoUI } from '../ui/feed-info';
 import { useSelector } from '../../services/store';
 import {
   selectOrders,
+  selectFeeds,
   selectOrdersTotal,
   selectOrdersTotalToday
 } from '../../services/feedsSlice';
@@ -17,7 +18,7 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
 
 export const FeedInfo: FC = () => {
   /** TODO: взять переменные из стора */
-  const orders: TOrder[] = useSelector(selectOrders);
+  const orders = useSelector(selectOrders);
   const feed = {
     total: useSelector(selectOrdersTotal),
     totalToday: useSelector(selectOrdersTotalToday)

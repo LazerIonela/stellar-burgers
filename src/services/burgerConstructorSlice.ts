@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
-import { orderBurgerApi } from '../utils/burger-api';
 import { v4 as uuidv4 } from 'uuid';
 import { RootState } from './store';
 
@@ -64,8 +63,9 @@ export const {
   moveIngredient,
   clearBasket
 } = burgerConstructorSlice.actions;
-export const selectConstructor = (state: RootState) => state.constructor;
-export const selectConstructorBun = (state: RootState) => state.constructor.bun;
+export const selectConstructor = (state: RootState) => state.burgerConstructor;
+export const selectConstructorBun = (state: RootState) =>
+  state.burgerConstructor.bun;
 export const selectConstructorIngredients = (state: RootState) =>
-  state.constructor.ingredients;
+  state.burgerConstructor.ingredients;
 export const burgerConstructorReducer = burgerConstructorSlice.reducer;

@@ -3,7 +3,7 @@ import { TOrderStatus, TOrder } from '@utils-types';
 import { getOrdersApi } from '../utils/burger-api';
 import { RootState } from './store';
 
-const getOrders = createAsyncThunk(
+export const getOrders = createAsyncThunk(
   'orders/getOrders',
   async () => await getOrdersApi()
 );

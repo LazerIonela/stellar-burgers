@@ -6,13 +6,13 @@ import { selectUser, selectUserIsAuthChecked } from '../../services/userSlice';
 
 type TProtectedRoute = {
   onlyUnAuth?: boolean;
-  children: React.JSX.Element;
+  children: React.ReactElement;
 };
 
 export const ProtectedRoute = ({
   onlyUnAuth = false,
   children
-}: TProtectedRoute): React.JSX.Element => {
+}: TProtectedRoute) => {
   const user = useSelector(selectUser);
   const isAuthChecked = useSelector(selectUserIsAuthChecked);
   const location = useLocation();
@@ -20,11 +20,11 @@ export const ProtectedRoute = ({
   if (!isAuthChecked) {
     return <Preloader />;
   }
-  if (!onlyUnAuth && !user) {
+  if (!onlyUnAuth && !user.name) {
     // для авторизованных, но неавторизованный
     return <Navigate to='/login' state={{ from: location }} />;
   }
-  if (onlyUnAuth && user) {
+  if (onlyUnAuth && user.name) {
     // для неавторизованых, но авторизован
     const { from } = location.state ?? { from: { pathname: '/' } };
     return <Navigate to={from} />;
@@ -32,9 +32,3 @@ export const ProtectedRoute = ({
 
   return children;
 };
-export const OnlyAuth = ProtectedRoute;
-export const OnlyUnAuth = ({
-  children
-}: {
-  children: React.JSX.Element;
-}): React.JSX.Element => <ProtectedRoute onlyUnAuth children={children} />;

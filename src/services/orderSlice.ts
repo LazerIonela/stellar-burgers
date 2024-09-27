@@ -15,7 +15,7 @@ export const orderBurger = createAsyncThunk(
 );
 
 //Получаем информармацию о заказе по номеру
-const getOrderByNumber = createAsyncThunk(
+export const getOrderByNumber = createAsyncThunk(
   'orders/getOrderByNumber',
   async (number: number) => {
     const response = await getOrderByNumberApi(number); // Ждём результат

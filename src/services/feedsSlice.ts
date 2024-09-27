@@ -4,10 +4,10 @@ import { getFeedsApi } from '../utils/burger-api';
 import { RootState } from './store';
 
 //Получаем общедоступную ленту заказов для всех пользователей
-export const getFeeds = createAsyncThunk(
-  'feeds/getFeeds',
-  async () => await getFeedsApi()
-);
+export const getFeeds = createAsyncThunk('feeds/getFeeds', async () => {
+  const response = await getFeedsApi();
+  return response;
+});
 
 interface TFeedsState {
   orders: TOrdersData;
@@ -27,9 +27,9 @@ const feedsSlice = createSlice({
   name: 'feeds',
   initialState,
   reducers: {
-    updateFeeds: (state, action) => {
-      state.orders = action.payload;
-    }
+    // updateFeeds: (state, action) => {
+    //   state.orders = action.payload;
+    // }
   },
   extraReducers: (builder) => {
     builder
@@ -53,6 +53,7 @@ const feedsSlice = createSlice({
 });
 
 export const selectOrders = (state: RootState) => state.feeds.orders.orders;
+export const selectFeeds = (state: RootState) => state.feeds;
 export const selectOrdersTotal = (state: RootState) => state.feeds.orders.total;
 export const selectOrdersTotalToday = (state: RootState) =>
   state.feeds.orders.totalToday;

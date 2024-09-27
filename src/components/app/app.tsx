@@ -22,13 +22,13 @@ import { getUser } from '../../services/userSlice';
 
 const App = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const backgroundLocation = location.state?.background;
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getUser());
     dispatch(getIngredients());
+    dispatch(getUser());
   }, [dispatch]);
 
   return (
@@ -97,41 +97,49 @@ const App = () => {
         />
         <Route path='*' element={<NotFound404 />} />
       </Routes>
-      {backgroundLocation && (
-        <Routes>
+      <Routes>
+        {backgroundLocation && (
+          // <Routes>
           <Route
             path='/feed/:number'
             element={
               <Modal
-                title='CurrentOrderInfo'
+                title='Текущий заказ'
                 children={<OrderInfo />}
                 onClose={() => navigate('/feed')}
               />
             }
           />
+        )}
+        {backgroundLocation && (
           <Route
             path='/ingredients/:id'
             element={
               <Modal
-                title='IngredientDetails'
+                title='Детали ингредиента'
                 children={<IngredientDetails />}
                 onClose={() => navigate('/')}
               />
             }
           />
+        )}
+        {backgroundLocation && (
           <Route
             path='/profile/orders/:number'
             element={
               <Modal
-                title='OrdersInfo'
-                children={<OrderInfo />}
+                title='Заказ'
+                children={
+                  <ProtectedRoute>
+                    <OrderInfo />
+                  </ProtectedRoute>
+                }
                 onClose={() => navigate('/profile/orders')}
               />
             }
           />
-        </Routes>
-      )}
-      ;
+        )}
+      </Routes>
     </div>
   );
 };

@@ -213,7 +213,7 @@ export const getUserApi = () =>
     } as HeadersInit
   });
 
-export const updateUserApi = (user: Partial<TRegisterData>, p0: any) =>
+export const updateUserApi = (user: Partial<TRegisterData>) =>
   fetchWithRefresh<TUserResponse>(`${URL}/auth/user`, {
     method: 'PATCH',
     headers: {
