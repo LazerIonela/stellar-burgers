@@ -9,12 +9,13 @@ import {
   forgotPasswordApi,
   resetPasswordApi,
   TRegisterData,
-  TLoginData,
-  TUserResponse
+  TLoginData
 } from '../utils/burger-api';
 import { RootState } from './store';
+import { setCookie } from '../utils/cookie';
 
 export const getUser = createAsyncThunk('user/getUser', async () => {
+  console.log('getUser called');
   const response = await getUserApi();
   return response;
 });
@@ -29,12 +30,22 @@ export const updateUser = createAsyncThunk(
 
 export const registerUser = createAsyncThunk(
   'user/register',
-  async (data: TRegisterData) => await registerUserApi(data)
+  async (data: TRegisterData) => {
+    const response = await registerUserApi(data);
+    localStorage.setItem('refreshToken', response.refreshToken);
+    setCookie('accessToken', response.accessToken);
+    return response;
+  }
 );
 
 export const loginUser = createAsyncThunk(
   'user/login',
-  async (data: TLoginData) => await loginUserApi(data)
+  async (data: TLoginData) => {
+    const response = await loginUserApi(data);
+    localStorage.setItem('refreshToken', response.refreshToken);
+    setCookie('accessToken', response.accessToken);
+    return response;
+  }
 );
 
 export const logout = createAsyncThunk('user/logout', async () => {
@@ -54,20 +65,15 @@ export const resetPassword = createAsyncThunk(
 );
 
 interface InitialState {
-  user: TUser;
+  userData: TUser | null;
   isAuth: boolean;
   error: string | undefined;
-  isAuthChecked: boolean;
 }
 
 const initialState: InitialState = {
-  user: {
-    email: '',
-    name: ''
-  },
+  userData: null,
   isAuth: false,
-  error: undefined,
-  isAuthChecked: false
+  error: undefined
 };
 
 const userSlice = createSlice({
@@ -75,52 +81,45 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     authChecked: (state) => {
-      state.isAuthChecked = true;
+      state.isAuth = true;
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(getUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        state.userData = action.payload.user;
         state.isAuth = true;
-        state.isAuthChecked = true;
       })
       .addCase(getUser.rejected, (state, action) => {
-        state.isAuthChecked = true;
+        state.error = action.error.message;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         if (action.payload.user?.email && action.payload.user?.name) {
-          state.user = action.payload.user;
+          state.userData = action.payload.user;
         }
       })
-
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        state.userData = action.payload.user;
         state.isAuth = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.error = action.error.message;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        state.userData = action.payload.user;
         state.isAuth = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.error = action.error.message;
       })
       .addCase(logout.fulfilled, (state) => {
-        state.user = {
-          email: '',
-          name: ''
-        };
+        state.userData = null;
         state.isAuth = false;
       });
   }
 });
 
-// export const { addBook, removeBook } = userSlice.actions;
-export const selectUser = (state: RootState) => state.user.user;
+export const { authChecked } = userSlice.actions;
+export const selectUser = (state: RootState) => state.user.userData;
 export const selectUserIsAuth = (state: RootState) => state.user.isAuth;
-export const selectUserIsAuthChecked = (state: RootState) =>
-  state.user.isAuthChecked;
 export const userReducer = userSlice.reducer;

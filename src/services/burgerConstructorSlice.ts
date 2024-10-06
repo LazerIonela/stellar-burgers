@@ -4,28 +4,32 @@ import { v4 as uuidv4 } from 'uuid';
 import { RootState } from './store';
 
 interface TBurgerConstructorState {
-  bun: TIngredient | null;
-  ingredients: TConstructorIngredient[];
+  constructorItems: {
+    bun: TIngredient | null;
+    ingredients: TConstructorIngredient[];
+  };
 }
 
 const initialState: TBurgerConstructorState = {
-  bun: null,
-  ingredients: []
+  constructorItems: {
+    bun: null,
+    ingredients: []
+  }
 };
 
 const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState,
   reducers: {
-    setConstructorItems(state, action: PayloadAction<TIngredient>) {
-      state.bun = action.payload;
+    setConstructorItems(state, action) {
+      state.constructorItems = action.payload;
     },
     addIngredient: {
       reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
         if (action.payload.type === 'bun') {
-          state.bun = action.payload;
+          state.constructorItems.bun = action.payload;
         } else {
-          state.ingredients.push(action.payload);
+          state.constructorItems.ingredients.push(action.payload);
         }
       },
       //prepare позволяет добавить дополнительные данные,
@@ -34,24 +38,25 @@ const burgerConstructorSlice = createSlice({
       })
     },
     removeIngredient: (state, action: PayloadAction<string>) => {
-      state.ingredients = state.ingredients.filter(
-        (ingredient) => ingredient.id !== action.payload
-      );
+      state.constructorItems.ingredients =
+        state.constructorItems.ingredients.filter(
+          (ingredient) => ingredient.id !== action.payload
+        );
     },
     moveIngredient: (
       state,
       action: PayloadAction<{ fromIndex: number; toIndex: number }>
     ) => {
       const { fromIndex, toIndex } = action.payload;
-      const ingredients = state.ingredients;
+      const ingredients = state.constructorItems.ingredients;
       // Извлекаем ингредиент, который нужно переместить
       const [movedIngredient] = ingredients.splice(fromIndex, 1);
       // Вставляем его на новую позицию
       ingredients.splice(toIndex, 0, movedIngredient);
     },
     clearBasket: (state) => {
-      state.bun = null;
-      state.ingredients = [];
+      state.constructorItems.bun = null;
+      state.constructorItems.ingredients = [];
     }
   }
 });
@@ -63,9 +68,10 @@ export const {
   moveIngredient,
   clearBasket
 } = burgerConstructorSlice.actions;
+
 export const selectConstructor = (state: RootState) => state.burgerConstructor;
 export const selectConstructorBun = (state: RootState) =>
-  state.burgerConstructor.bun;
+  state.burgerConstructor.constructorItems.bun;
 export const selectConstructorIngredients = (state: RootState) =>
-  state.burgerConstructor.ingredients;
+  state.burgerConstructor.constructorItems.ingredients;
 export const burgerConstructorReducer = burgerConstructorSlice.reducer;

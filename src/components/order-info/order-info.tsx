@@ -7,22 +7,18 @@ import { useEffect } from 'react';
 import { selectIngredients } from '../../services/ingredientsSlice';
 import {
   getOrderByNumber,
-  selectOrderByNumber,
-  selectOrderModalData
+  selectOrderByNumber
 } from '../../services/orderSlice';
 import { useParams } from 'react-router-dom';
-
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
   const dispatch = useDispatch();
   const orderData = useSelector(selectOrderByNumber);
   const ingredients = useSelector(selectIngredients);
-  const { number } = useParams();
+  const { number } = useParams<{ number: string }>();
 
   useEffect(() => {
-    if (number) {
-      dispatch(getOrderByNumber(Number(number)));
-    }
+    dispatch(getOrderByNumber(parseInt(number!)));
   }, [dispatch, number]);
 
   /* Готовим данные для отображения */

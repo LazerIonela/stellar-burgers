@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { TOrderStatus, TOrder } from '@utils-types';
+import { TOrder } from '@utils-types';
 import { getOrdersApi } from '../utils/burger-api';
 import { RootState } from './store';
-
+//запрос ленты заказов пользователя
 export const getOrders = createAsyncThunk(
   'orders/getOrders',
   async () => await getOrdersApi()
@@ -10,12 +10,10 @@ export const getOrders = createAsyncThunk(
 
 interface TProfileOrdersState {
   orders: TOrder[];
-  status: TOrderStatus;
 }
 
 const initialState: TProfileOrdersState = {
-  orders: [],
-  status: 'failed'
+  orders: []
 };
 
 const profileOrdersSlice = createSlice({
@@ -24,17 +22,12 @@ const profileOrdersSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getOrders.pending, (state) => {
-        state.status = 'pending';
-      })
       .addCase(getOrders.rejected, (state, action) => {
-        state.status = 'failed';
         console.error('Error:', action.error.message);
       })
       .addCase(
         getOrders.fulfilled,
         (state, action: PayloadAction<TOrder[]>) => {
-          state.status = 'done';
           state.orders = action.payload;
         }
       );
@@ -43,6 +36,4 @@ const profileOrdersSlice = createSlice({
 
 export const selectProfileOrders = (state: RootState) =>
   state.profileOrders.orders;
-export const selectProfileOrdersStatus = (state: RootState) =>
-  state.profileOrders.status;
 export const profileOrdersReducer = profileOrdersSlice.reducer;

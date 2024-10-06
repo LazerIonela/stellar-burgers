@@ -1,17 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { TOrder, TOrdersData, TOrderStatus } from '@utils-types';
-import {
-  getOrderByNumberApi,
-  orderBurgerApi,
-  TOrdersResponse,
-  TNewOrderResponse
-} from '../utils/burger-api';
+import { TOrder, TOrdersData } from '@utils-types';
+import { getOrderByNumberApi, orderBurgerApi } from '../utils/burger-api';
 import { RootState } from './store';
 
 //Отправляем заказ на готовку
 export const orderBurger = createAsyncThunk(
   'order/orderBurger',
-  async (_id: string[]) => orderBurgerApi(_id)
+  async (_id: string[]) => {
+    const response = await orderBurgerApi(_id);
+    return response;
+  }
 );
 
 //Получаем информармацию о заказе по номеру
@@ -41,15 +39,16 @@ const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    clearOrderModalData: (state) => {
-      state.orderRequest = false;
-      state.orderModalData = null;
-    },
     setOrderRequest(state, action) {
       state.orderRequest = action.payload;
     },
     setOrderModalData(state, action) {
       state.orderModalData = action.payload;
+    },
+
+    resetOrderModalData(state) {
+      state.orderModalData = null;
+      state.orderRequest = false;
     }
   },
   extraReducers: (builder) => {
@@ -64,17 +63,20 @@ const orderSlice = createSlice({
         state.orderRequest = true;
       })
       .addCase(orderBurger.fulfilled, (state, action) => {
-        state.order.push(action.payload.order);
-        state.orderRequest = false;
-        state.orderModalData = action.payload.order;
+        if (action.payload && action.payload.order) {
+          state.order.push(action.payload.order);
+          state.orderRequest = false;
+          state.orderModalData = action.payload.order;
+        }
       })
       .addCase(orderBurger.rejected, (state, action) => {
+        state.orderRequest = false;
         console.error('Error:', action.error.message);
       });
   }
 });
 
-export const { clearOrderModalData, setOrderModalData, setOrderRequest } =
+export const { resetOrderModalData, setOrderModalData, setOrderRequest } =
   orderSlice.actions;
 export const selectOrderByNumber = (state: RootState) =>
   state.order.selectedOrder;

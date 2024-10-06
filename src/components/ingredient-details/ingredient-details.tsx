@@ -15,7 +15,7 @@ export const IngredientDetails: FC = () => {
   const dispatch = useDispatch();
   const ingredientData = useSelector(selectIngredient);
   const ingredients = useSelector(selectIngredients);
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
 
   useEffect(() => {
     if (id && ingredients.length > 0) {
@@ -26,7 +26,7 @@ export const IngredientDetails: FC = () => {
         dispatch(setSelectedIngredient(selectedIngredient));
       }
     }
-  }, [dispatch]);
+  }, [dispatch, id, ingredients]);
 
   if (!ingredientData) {
     return <Preloader />;

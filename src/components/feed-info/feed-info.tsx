@@ -5,7 +5,6 @@ import { FeedInfoUI } from '../ui/feed-info';
 import { useSelector } from '../../services/store';
 import {
   selectOrders,
-  selectFeeds,
   selectOrdersTotal,
   selectOrdersTotalToday
 } from '../../services/feedsSlice';

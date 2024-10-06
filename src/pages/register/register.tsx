@@ -3,7 +3,7 @@ import { RegisterUI } from '@ui-pages';
 import { useDispatch } from '../../services/store';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { TRegisterData } from '@api';
-import { registerUser } from '../../services/userSlice';
+import { registerUser, loginUser } from '../../services/userSlice';
 
 export const Register: FC = () => {
   const [userName, setUserName] = useState('');
@@ -15,17 +15,9 @@ export const Register: FC = () => {
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    const data: TRegisterData = {
-      email,
-      name: userName,
-      password
-    };
-    try {
-      await dispatch(registerUser(data)).unwrap();
-      navigate('/profile');
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(
+      registerUser({ name: userName, email: email, password: password })
+    ).then(() => dispatch(loginUser({ email: email, password: password })));
   };
 
   return (

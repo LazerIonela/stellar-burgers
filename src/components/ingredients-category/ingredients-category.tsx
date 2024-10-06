@@ -11,12 +11,12 @@ export const IngredientsCategory = forwardRef<
   const burgerConstructor = useSelector(selectConstructor);
 
   const ingredientsCounters = useMemo(() => {
-    if (!burgerConstructor || !burgerConstructor.ingredients) {
+    if (!burgerConstructor || !burgerConstructor.constructorItems.ingredients) {
       // Если burgerConstructor или ingredients не определены, возвращаем пустой объект
       return {};
     }
 
-    const { bun, ingredients } = burgerConstructor;
+    const { bun, ingredients } = burgerConstructor.constructorItems;
     const counters: { [key: string]: number } = {};
     ingredients.forEach((ingredient: TIngredient) => {
       if (!counters[ingredient._id]) counters[ingredient._id] = 0;

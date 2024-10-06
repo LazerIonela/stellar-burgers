@@ -1,21 +1,20 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useEffect } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useSelector, useDispatch } from '../../services/store';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  selectConstructor,
-  clearBasket
+  clearBasket,
+  selectConstructorBun,
+  selectConstructorIngredients
 } from '../../services/burgerConstructorSlice';
-import { orderBurgerApi } from '@api';
 import {
-  setOrderRequest,
-  setOrderModalData,
+  orderBurger,
+  resetOrderModalData,
   selectOrderModalData,
-  selectOrderRequest,
-  clearOrderModalData,
-  orderBurger
+  selectOrderRequest
 } from '../../services/orderSlice';
+import {} from '../../services/burgerConstructorSlice';
 
 import { selectUserIsAuth } from '../../services/userSlice';
 
@@ -23,30 +22,32 @@ export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const constructorItems = useSelector(selectConstructor);
   const orderRequest = useSelector(selectOrderRequest);
   const orderModalData = useSelector(selectOrderModalData);
-
   const userIsAuth = useSelector(selectUserIsAuth);
+  const constructorItems = {
+    bun: useSelector(selectConstructorBun),
+    ingredients: useSelector(selectConstructorIngredients)
+  };
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
-    if (!userIsAuth) {
-      navigate(`/login`);
-      return;
-    }
+
     const orderData = [
       constructorItems.bun._id,
       ...constructorItems.ingredients.map((ingredient) => ingredient._id)
     ];
+    orderData.push(constructorItems.bun._id);
 
-    dispatch(setOrderRequest(true));
-    dispatch(orderBurger(orderData));
+    if (userIsAuth) {
+      dispatch(orderBurger(orderData));
+    } else {
+      navigate(`/login`);
+    }
   };
 
   const closeOrderModal = () => {
-    dispatch(clearOrderModalData());
+    dispatch(resetOrderModalData());
     dispatch(clearBasket());
   };
 
