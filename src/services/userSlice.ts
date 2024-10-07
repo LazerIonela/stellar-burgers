@@ -68,12 +68,14 @@ interface InitialState {
   userData: TUser | null;
   isAuth: boolean;
   error: string | undefined;
+  isAuthChecked: boolean;
 }
 
 const initialState: InitialState = {
   userData: null,
   isAuth: false,
-  error: undefined
+  error: undefined,
+  isAuthChecked: false
 };
 
 const userSlice = createSlice({
@@ -81,7 +83,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     authChecked: (state) => {
-      state.isAuth = true;
+      state.isAuthChecked = true;
     }
   },
   extraReducers: (builder) => {
@@ -89,8 +91,11 @@ const userSlice = createSlice({
       .addCase(getUser.fulfilled, (state, action) => {
         state.userData = action.payload.user;
         state.isAuth = true;
+        state.isAuthChecked = true;
       })
       .addCase(getUser.rejected, (state, action) => {
+        state.isAuth = false;
+        state.isAuthChecked = true;
         state.error = action.error.message;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
@@ -101,6 +106,7 @@ const userSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.userData = action.payload.user;
         state.isAuth = true;
+        state.isAuthChecked = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.error = action.error.message;
@@ -108,6 +114,7 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.userData = action.payload.user;
         state.isAuth = true;
+        state.isAuthChecked = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.error = action.error.message;
@@ -115,6 +122,7 @@ const userSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.userData = null;
         state.isAuth = false;
+        state.isAuthChecked = true;
       });
   }
 });
@@ -122,4 +130,6 @@ const userSlice = createSlice({
 export const { authChecked } = userSlice.actions;
 export const selectUser = (state: RootState) => state.user.userData;
 export const selectUserIsAuth = (state: RootState) => state.user.isAuth;
+export const selectUserIsAuthChecked = (state: RootState) =>
+  state.user.isAuthChecked;
 export const userReducer = userSlice.reducer;
