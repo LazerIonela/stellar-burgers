@@ -21,14 +21,14 @@ export const getOrderByNumber = createAsyncThunk(
   }
 );
 
-interface TOrderState {
+export interface TOrderState {
   order: TOrder[];
   selectedOrder: TOrder | null;
   orderRequest: boolean;
   orderModalData: TOrder | null;
 }
 
-const initialState: TOrderState = {
+export const initialState: TOrderState = {
   order: [],
   selectedOrder: null,
   orderRequest: false,

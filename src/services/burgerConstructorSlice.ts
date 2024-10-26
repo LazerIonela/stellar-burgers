@@ -3,14 +3,14 @@ import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
 import { v4 as uuidv4 } from 'uuid';
 import { RootState } from './store';
 
-interface TBurgerConstructorState {
+export interface TBurgerConstructorState {
   constructorItems: {
     bun: TIngredient | null;
     ingredients: TConstructorIngredient[];
   };
 }
 
-const initialState: TBurgerConstructorState = {
+export const initialState: TBurgerConstructorState = {
   constructorItems: {
     bun: null,
     ingredients: []

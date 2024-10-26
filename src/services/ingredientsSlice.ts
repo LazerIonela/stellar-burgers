@@ -18,7 +18,7 @@ interface TIngredientState {
   error: string | null | undefined;
 }
 
-const initialState: TIngredientState = {
+export const initialState: TIngredientState = {
   ingredients: [],
   selectedIngredient: null,
   isLoading: false,
