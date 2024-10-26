@@ -1,3 +1,14 @@
+const modalContent = '[data-cy=modal-content]';
+const ingredients = '[data-cy=ingredients]';
+const constructorBurger = '[data-cy=constructor]';
+const buns = '[data-cy=buns]';
+const topBun = '[data-cy=constructor-bun-top]';
+const bottomBun = '[data-cy=constructor-bun-bottom]';
+const closeButton = '[data-cy=modal-button-close]';
+const closeOverlay = '[data-cy=modal-overlay-close]';
+const postButton = '[data-cy=order-button-post]';
+const orderNumber = '[data-cy=order-number]';
+
 describe('проверяем доступность приложения', function () {
   beforeEach(() => {
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' }).as(
@@ -12,7 +23,7 @@ describe('проверяем доступность приложения', funct
     window.localStorage.setItem('refreshToken', JSON.stringify('111111111'));
     cy.setCookie('accessToken', JSON.stringify('222222222'));
     cy.viewport(1920, 1080);
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
   });
 
   afterEach(() => {
@@ -22,46 +33,30 @@ describe('проверяем доступность приложения', funct
 
   it('Добавление ингредиента из списка в конструктор', () => {
     it('Добавление булки в конструктор', function () {
-      cy.get('[data-cy="buns"]').contains('Добавить').click();
-      cy.get('[data-cy="constructor-bun-top"]')
-        .contains('Краторная булка N-200i')
-        .should('exist');
-      cy.get('[data-cy="constructor-bun-bottom"]')
-        .contains('Краторная булка N-200i')
-        .should('exist');
+      cy.get(buns).contains('Добавить').click();
+      cy.get(topBun).contains('Краторная булка N-200i').should('exist');
+      cy.get(bottomBun).contains('Краторная булка N-200i').should('exist');
     });
   });
 
   it('Открытие модального окна ингредиента', () => {
-    cy.get('[data-cy="modal-content"]').should('not.exist');
-    cy.get('[data-cy="ingredients"]')
-      .contains('Краторная булка N-200i')
-      .click();
-    cy.get('[data-cy="modal-content"]')
-      .contains('Краторная булка N-200i')
-      .should('exist');
+    cy.get(modalContent).should('not.exist');
+    cy.get(ingredients).contains('Краторная булка N-200i').click();
+    cy.get(modalContent).contains('Краторная булка N-200i').should('exist');
   });
 
   it('Закрытие по клику на крестик', () => {
-    cy.get('[data-cy="ingredients"]')
-      .contains('Краторная булка N-200i')
-      .click();
-    cy.get('[data-cy="modal-content"]')
-      .contains('Краторная булка N-200i')
-      .should('exist');
-    cy.get('[data-cy="modal-button-close"]').click();
-    cy.get('[data-cy="modal-content"]').should('not.exist');
+    cy.get(ingredients).contains('Краторная булка N-200i').click();
+    cy.get(modalContent).contains('Краторная булка N-200i').should('exist');
+    cy.get(closeButton).click();
+    cy.get(modalContent).should('not.exist');
   });
 
   it('Закрытие по клику на оверлей', () => {
-    cy.get('[data-cy="ingredients"]')
-      .contains('Краторная булка N-200i')
-      .click();
-    cy.get('[data-cy="modal-content"]')
-      .contains('Краторная булка N-200i')
-      .should('exist');
-    cy.get('[data-cy=modal-overlay-close]').click('top', { force: true });
-    cy.get('[data-cy="modal-content"]').should('not.exist');
+    cy.get(ingredients).contains('Краторная булка N-200i').click();
+    cy.get(modalContent).contains('Краторная булка N-200i').should('exist');
+    cy.get(closeOverlay).click('top', { force: true });
+    cy.get(modalContent).should('not.exist');
   });
 
   it('Подставляются моковые токены авторизации', () => {
@@ -75,20 +70,23 @@ describe('проверяем доступность приложения', funct
   });
 
   it('Оформление заказа', () => {
-    cy.get('[data-cy="ingredients"]').contains('Добавить').click();
+    cy.get(ingredients).contains('Добавить').click();
     //Вызывается клик по кнопке «Оформить заказ»
-    cy.get('[data-cy="order-button-post"]').contains('Оформить заказ').click();
+    cy.get(postButton).contains('Оформить заказ').click();
 
     //Проверяется, что модальное окно открылось и номер заказа верный
-    cy.get('[data-cy="order-number"]').contains('77771').should('exist');
+    cy.intercept('POST', 'api/orders', { fixture: 'order.json' }).as(
+      'orderBurger'
+    );
+    cy.get(orderNumber).contains('77771').should('exist');
 
     //Закрывается модальное окно и проверяется успешность закрытия
-    cy.get('[data-cy="modal-button-close"]').click();
-    cy.get('[data-cy="modal-content"]').should('not.exist');
+    cy.get(closeButton).click();
+    cy.get(modalContent).should('not.exist');
   });
 
   it('Проверяется, что конструктор пуст', () => {
-    cy.get('[data-cy="constructor"]')
+    cy.get(constructorBurger)
       .contains('Краторная булка N-200i')
       .should('not.exist');
   });

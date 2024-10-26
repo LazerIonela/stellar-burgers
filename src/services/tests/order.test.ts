@@ -2,9 +2,7 @@ import {
   orderReducer,
   orderBurger,
   getOrderByNumber,
-  TOrderState,
-  setOrderModalData,
-  resetOrderModalData
+  initialState
 } from '../orderSlice';
 
 const mockOrder = {
@@ -19,13 +17,6 @@ const mockOrder = {
     'MockMainIngredient',
     'mockSauceIngredient'
   ]
-};
-
-const initialState = {
-  order: [],
-  selectedOrder: null,
-  orderRequest: false,
-  orderModalData: null
 };
 
 describe('тесты orders', () => {

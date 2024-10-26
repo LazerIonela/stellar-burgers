@@ -1,4 +1,8 @@
-import { getIngredients, ingredientsReducer } from '../ingredientsSlice';
+import {
+  getIngredients,
+  ingredientsReducer,
+  initialState
+} from '../ingredientsSlice';
 
 const mockIngredients = [
   {
@@ -15,13 +19,6 @@ const mockIngredients = [
     image_large: 'https://code.s3.yandex.net/react/code/meat-01-large.png'
   }
 ];
-
-const initialState = {
-  ingredients: [],
-  selectedIngredient: null,
-  isLoading: false,
-  error: null
-};
 
 describe('тесты ingredientdsSlice', () => {
   afterEach(() => {

@@ -5,8 +5,6 @@ import {
   registerUser,
   loginUser,
   logout,
-  forgotPassword,
-  resetPassword,
   TUserState,
   initialState
 } from '../userSlice';
@@ -16,16 +14,6 @@ const mockUserData = {
     email: 'test@example.com',
     name: 'Test User'
   },
-  success: true
-};
-
-const mockLoginUser = {
-  user: {
-    email: 'test@example.com',
-    name: 'Test User'
-  },
-  accessToken: 'mockAccessToken',
-  refreshToken: 'mockRefreshToken',
   success: true
 };
 

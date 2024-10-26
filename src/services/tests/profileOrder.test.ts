@@ -1,7 +1,7 @@
 import {
   profileOrdersReducer,
   getOrders,
-  TProfileOrdersState
+  initialState
 } from '../profileOrdersSlice';
 
 const mockOrders = {
@@ -29,9 +29,6 @@ const mockOrders = {
       ingredients: ['mockBunIngredient', 'MockMainIngredient']
     }
   ]
-};
-const initialState: TProfileOrdersState = {
-  orders: []
 };
 
 describe('тесты profileOrders', () => {

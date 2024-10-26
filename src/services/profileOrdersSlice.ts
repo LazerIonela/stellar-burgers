@@ -12,7 +12,7 @@ export interface TProfileOrdersState {
   orders: TOrder[];
 }
 
-const initialState: TProfileOrdersState = {
+export const initialState: TProfileOrdersState = {
   orders: []
 };
 

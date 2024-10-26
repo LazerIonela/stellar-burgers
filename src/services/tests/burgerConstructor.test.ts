@@ -9,7 +9,8 @@ import {
   removeIngredient,
   moveIngredient,
   TBurgerConstructorState,
-  burgerConstructorReducer
+  burgerConstructorReducer,
+  initialState
 } from '../burgerConstructorSlice';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -17,13 +18,6 @@ import { v4 as uuidv4 } from 'uuid';
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'mocked-uuid')
 }));
-
-const initialState: TBurgerConstructorState = {
-  constructorItems: {
-    bun: null,
-    ingredients: []
-  }
-};
 
 const mockMainIngredient = {
   _id: '643d69a5c3f7b9001cfa0941',
