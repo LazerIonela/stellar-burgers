@@ -21,7 +21,7 @@ export const getOrderByNumber = createAsyncThunk(
   }
 );
 
-interface TOrderState {
+export interface TOrderState {
   order: TOrder[];
   selectedOrder: TOrder | null;
   orderRequest: boolean;

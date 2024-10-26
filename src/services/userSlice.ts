@@ -64,14 +64,14 @@ export const resetPassword = createAsyncThunk(
     await resetPasswordApi(data)
 );
 
-interface InitialState {
+export interface TUserState {
   userData: TUser | null;
   isAuth: boolean;
   error: string | undefined;
   isAuthChecked: boolean;
 }
 
-const initialState: InitialState = {
+export const initialState: TUserState = {
   userData: null,
   isAuth: false,
   error: undefined,

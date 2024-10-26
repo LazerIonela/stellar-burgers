@@ -13,7 +13,7 @@ interface TFeedsState {
   orders: TOrdersData;
 }
 
-const initialState: TFeedsState = {
+export const initialState: TFeedsState = {
   orders: {
     orders: [],
     total: 0,

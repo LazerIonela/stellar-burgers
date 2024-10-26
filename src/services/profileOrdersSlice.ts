@@ -8,7 +8,7 @@ export const getOrders = createAsyncThunk(
   async () => await getOrdersApi()
 );
 
-interface TProfileOrdersState {
+export interface TProfileOrdersState {
   orders: TOrder[];
 }
 
